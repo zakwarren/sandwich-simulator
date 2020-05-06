@@ -8,7 +8,10 @@ import Button from "../../UI/Button/Button";
 const CheckoutSummary = (props) => {
   return (
     <div className={classes.CheckoutSummary}>
-      <h1>Clamp your pearly whites around this hasty, limp sandwich!</h1>
+      <h1>
+        Clamp your pearly whites around this hasty, limp sandwich filled with
+        MSG and your choice of ingredients!
+      </h1>
       <div className={classes.Sandwich}>
         <Sandwich ingredients={props.ingredients} />
       </div>

@@ -23,7 +23,7 @@ const OrderSummary = (props) => {
     <>
       <h3>Your Order</h3>
       <p>
-        Enjoy this hasty, limp sandwich filled with MSG and your choice of
+        Behold the glory of this dry, dejected sandwich with your choice of
         ingredients:
       </p>
       <ul>{ingredientSummary}</ul>
