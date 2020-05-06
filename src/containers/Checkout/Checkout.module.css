@@ -1,0 +1,13 @@
+.Checkout {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+@media (min-width: 500px) {
+  .Checkout {
+    flex-direction: row;
+  }
+}

@@ -1,0 +1,21 @@
+.CheckoutSummary {
+  margin: auto;
+  width: 80%;
+  text-align: center;
+}
+
+.Sandwich {
+  margin: auto;
+  width: 100%;
+  height: auto;
+}
+
+@media (min-width: 500px) {
+  .CheckoutSummary {
+    width: 50%;
+  }
+
+  .Sandwich {
+    height: 60vh;
+  }
+}
