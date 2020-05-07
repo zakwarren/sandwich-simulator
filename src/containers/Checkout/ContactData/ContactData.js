@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
 import classes from "./ContactData.module.css";
 import Button from "../../../components/UI/Button/Button";
 import Spinner from "../../../components/UI/Spinner/Spinner";
 import Input from "../../../components/UI/Input/Input";
+import { getIngredientCounts } from "../../../utils/utilities";
+import * as actions from "../../../store/actions/index";
 
 class ContactData extends Component {
   state = {
@@ -133,18 +136,18 @@ class ContactData extends Component {
   orderHandler = (event) => {
     event.preventDefault();
 
-    this.setState({ loading: true });
     const formData = {};
     for (let formElement in this.state.orderForm) {
       formData[formElement] = this.state.orderForm[formElement].value;
     }
+    const ingredients = getIngredientCounts(this.props.ings);
     const order = {
-      ingredients: this.props.ingredients,
+      ingredients: ingredients,
       price: this.props.price,
       orderData: formData,
     };
 
-    alert("Your order: " + order);
+    this.props.onOrderBurger(order);
   };
 
   inputChangedHandler = (event, inputIdentifier) => {
@@ -215,7 +218,7 @@ class ContactData extends Component {
         </form>
       </div>
     );
-    if (this.state.loading) {
+    if (this.props.loading) {
       form = <Spinner />;
     }
 
@@ -224,9 +227,24 @@ class ContactData extends Component {
 }
 
 ContactData.propTypes = {
-  ingredients: PropTypes.object.isRequired,
+  ings: PropTypes.array.isRequired,
   price: PropTypes.number.isRequired,
+  loading: PropTypes.bool.isRequired,
   history: PropTypes.object.isRequired,
 };
 
-export default ContactData;
+const mapStateToProps = (state) => {
+  return {
+    ings: state.sandwichSimulator.ingredients,
+    price: state.sandwichSimulator.totalPrice,
+    loading: state.order.loading,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onOrderBurger: (orderData) => dispatch(actions.purchaseBurger(orderData)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ContactData);

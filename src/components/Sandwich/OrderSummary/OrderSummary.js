@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import Button from "../../UI/Button/Button";
 
 const OrderSummary = (props) => {
-  const ingredientSummary = props.controls.map((igKey) => {
+  const ingredientSummary = props.ingredients.map((igKey) => {
     return (
       <li key={igKey.type}>
         <span
@@ -14,7 +14,7 @@ const OrderSummary = (props) => {
         >
           {igKey.label}
         </span>
-        : {props.ingredients[igKey.type]}
+        : {igKey.amount}
       </li>
     );
   });
@@ -42,8 +42,7 @@ const OrderSummary = (props) => {
 };
 
 OrderSummary.propTypes = {
-  controls: PropTypes.array.isRequired,
-  ingredients: PropTypes.object.isRequired,
+  ingredients: PropTypes.array.isRequired,
   price: PropTypes.number.isRequired,
   purchaseCancelled: PropTypes.func.isRequired,
   purchaseContinued: PropTypes.func.isRequired,

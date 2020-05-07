@@ -1,27 +1,14 @@
 import React, { Component } from "react";
-import { Route } from "react-router-dom";
+import { Route, Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
 import classes from "./Checkout.module.css";
 import CheckoutSummary from "../../components/Order/CheckoutSummary/CheckoutSummary";
 import ContactData from "./ContactData/ContactData";
+import { getIngredientCounts } from "../../utils/utilities";
 
 class Checkout extends Component {
-  constructor(props) {
-    super(props);
-    const query = new URLSearchParams(this.props.location.search);
-    const ingredients = {};
-    let price = 0;
-    for (let param of query.entries()) {
-      if (param[0] === "price") {
-        price = param[1];
-      } else {
-        ingredients[param[0]] = +param[1];
-      }
-    }
-    this.state = { ingredients: ingredients, totalPrice: price };
-  }
-
   checkoutCancelledHandler = () => {
     this.props.history.goBack();
   };
@@ -31,32 +18,44 @@ class Checkout extends Component {
   };
 
   render() {
-    return (
-      <div className={classes.Checkout}>
-        <CheckoutSummary
-          ingredients={this.state.ingredients}
-          checkoutCancelled={this.checkoutCancelledHandler}
-          checkoutContinued={this.checkoutContinuedHandler}
-        />
-        <Route
-          path={this.props.match.path + "/contact-data"}
-          render={(props) => (
-            <ContactData
-              ingredients={this.state.ingredients}
-              price={+this.state.totalPrice}
-              {...props}
-            />
-          )}
-        />
-      </div>
-    );
+    const ingCounts = getIngredientCounts(this.props.ings);
+
+    let summary = <Redirect to="/" />;
+    if (this.props.ings) {
+      const purchasedRedirect = this.props.purchased ? (
+        <Redirect to="/" />
+      ) : null;
+      summary = (
+        <div className={classes.Checkout}>
+          {purchasedRedirect}
+          <CheckoutSummary
+            ingredients={ingCounts}
+            checkoutCancelled={this.checkoutCancelledHandler}
+            checkoutContinued={this.checkoutContinuedHandler}
+          />
+          <Route
+            path={this.props.match.path + "/contact-data"}
+            component={ContactData}
+          />
+        </div>
+      );
+    }
+    return summary;
   }
 }
 
 Checkout.propTypes = {
-  location: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
+  ings: PropTypes.array,
+  purchased: PropTypes.bool.isRequired,
 };
 
-export default Checkout;
+const mapStateToProps = (state) => {
+  return {
+    ings: state.sandwichSimulator.ingredients,
+    purchased: state.order.purchased,
+  };
+};
+
+export default connect(mapStateToProps)(Checkout);
