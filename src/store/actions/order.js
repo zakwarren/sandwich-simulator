@@ -1,4 +1,5 @@
 import * as actionTypes from "./actionTypes";
+import Server from "../../utils/serverApi";
 
 export const purchaseInit = () => {
   return {
@@ -27,17 +28,16 @@ const purchaseFail = (error) => {
   };
 };
 
-export const purchaseBurger = (orderData) => {
+export const purchaseSandwich = (orderData) => {
   return (dispatch) => {
     dispatch(purchaseStart());
-    // // post order
-    //   .post("/orders.json", orderData)
-    //   .then((response) => {
-    //     dispatch(purchaseSuccess(response.data.name, orderData));
-    //   })
-    //   .catch((error) => {
-    //     dispatch(purchaseFail(error));
-    //   });
+    Server.post("/orders.json", orderData)
+      .then((result) => {
+        dispatch(purchaseSuccess(result.id, orderData));
+      })
+      .catch((error) => {
+        dispatch(purchaseFail(error));
+      });
   };
 };
 
@@ -64,20 +64,19 @@ const fetchOrdersFail = (error) => {
 export const fetchOrders = () => {
   return (dispatch) => {
     dispatch(fetchOrdersStart());
-    // // get orders
-    //   .get("orders.json")
-    //   .then((res) => {
-    //     const fetchedOrders = [];
-    //     for (let key in res.data) {
-    //       fetchedOrders.push({
-    //         ...res.data[key],
-    //         id: key,
-    //       });
-    //     }
-    //     dispatch(fetchOrdersSuccess(fetchedOrders));
-    //   })
-    //   .catch((error) => {
-    //     dispatch(fetchOrdersFail(error));
-    //   });
+    Server.get("/orders.json")
+      .then((res) => {
+        const fetchedOrders = [];
+        for (let key in res) {
+          fetchedOrders.push({
+            ...res[key],
+            id: key,
+          });
+        }
+        dispatch(fetchOrdersSuccess(fetchedOrders));
+      })
+      .catch((error) => {
+        dispatch(fetchOrdersFail(error));
+      });
   };
 };
