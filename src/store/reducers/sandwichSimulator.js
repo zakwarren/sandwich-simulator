@@ -4,7 +4,7 @@ import { updateObject } from "../utility";
 const initialState = {
   ingredients: null,
   totalPrice: 4,
-  error: false,
+  error: null,
 };
 
 const addIngredient = (state, action) => {
@@ -41,12 +41,12 @@ const setIngredients = (state, action) => {
   return updateObject(state, {
     ingredients: action.ingredients,
     totalPrice: initialState.totalPrice,
-    error: false,
+    error: action.error,
   });
 };
 
-const fetchIngredientsFailed = (state) => {
-  return updateObject(state, { error: true });
+const fetchIngredientsFailed = (state, action) => {
+  return updateObject(state, { error: action.error });
 };
 
 const reducer = (state = initialState, action) => {
@@ -58,7 +58,7 @@ const reducer = (state = initialState, action) => {
     case actionTypes.SET_INGREDIENTS:
       return setIngredients(state, action);
     case actionTypes.FETCH_INGREDIENTS_FAILED:
-      return fetchIngredientsFailed(state);
+      return fetchIngredientsFailed(state, action);
     default:
       return state;
   }

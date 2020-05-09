@@ -33,7 +33,11 @@ export const purchaseSandwich = (orderData) => {
     dispatch(purchaseStart());
     Server.post("/orders.json", orderData)
       .then((result) => {
-        dispatch(purchaseSuccess(result.id, orderData));
+        if (result.message && result.message === "error") {
+          throw new Error(result.data);
+        } else {
+          dispatch(purchaseSuccess(result.id, orderData));
+        }
       })
       .catch((error) => {
         dispatch(purchaseFail(error));
@@ -66,14 +70,18 @@ export const fetchOrders = () => {
     dispatch(fetchOrdersStart());
     Server.get("/orders.json")
       .then((res) => {
-        const fetchedOrders = [];
-        for (let key in res) {
-          fetchedOrders.push({
-            ...res[key],
-            id: key,
-          });
+        if (res.message && res.message === "error") {
+          throw new Error(res.data);
+        } else {
+          const fetchedOrders = [];
+          for (let key in res) {
+            fetchedOrders.push({
+              ...res[key],
+              id: key,
+            });
+          }
+          dispatch(fetchOrdersSuccess(fetchedOrders));
         }
-        dispatch(fetchOrdersSuccess(fetchedOrders));
       })
       .catch((error) => {
         dispatch(fetchOrdersFail(error));

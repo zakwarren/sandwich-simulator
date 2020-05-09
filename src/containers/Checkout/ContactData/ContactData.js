@@ -7,6 +7,7 @@ import Button from "../../../components/UI/Button/Button";
 import Spinner from "../../../components/UI/Spinner/Spinner";
 import Input from "../../../components/UI/Input/Input";
 import { getIngredientCounts } from "../../../utils/utilities";
+import ErrorHandler from "../../../hoc/ErrorHandler/ErrorHandler";
 import * as actions from "../../../store/actions/index";
 
 class ContactData extends Component {
@@ -230,6 +231,7 @@ ContactData.propTypes = {
   ings: PropTypes.array.isRequired,
   price: PropTypes.number.isRequired,
   loading: PropTypes.bool.isRequired,
+  error: PropTypes.object,
   history: PropTypes.object.isRequired,
 };
 
@@ -238,6 +240,7 @@ const mapStateToProps = (state) => {
     ings: state.sandwichSimulator.ingredients,
     price: state.sandwichSimulator.totalPrice,
     loading: state.order.loading,
+    error: state.order.error,
   };
 };
 
@@ -247,4 +250,7 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactData);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ErrorHandler(ContactData));

@@ -7,6 +7,7 @@ import BuildControls from "../../components/Sandwich/BuildControls/BuildControls
 import Modal from "../../components/UI/Modal/Modal";
 import OrderSummary from "../../components/Sandwich/OrderSummary/OrderSummary";
 import Spinner from "../../components/UI/Spinner/Spinner";
+import ErrorHandler from "../../hoc/ErrorHandler/ErrorHandler";
 import * as actions from "../../store/actions/index";
 
 class SandwichSimulator extends Component {
@@ -108,7 +109,7 @@ SandwichSimulator.propTypes = {
   history: PropTypes.object.isRequired,
   ings: PropTypes.array,
   price: PropTypes.number.isRequired,
-  error: PropTypes.bool.isRequired,
+  error: PropTypes.object,
 };
 
 const mapStateToProps = (state) => {
@@ -129,4 +130,7 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SandwichSimulator);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ErrorHandler(SandwichSimulator));

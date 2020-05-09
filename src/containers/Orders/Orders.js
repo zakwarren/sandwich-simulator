@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 
 import Order from "../../components/Order/Order";
 import Spinner from "../../components/UI/Spinner/Spinner";
+import ErrorHandler from "../../hoc/ErrorHandler/ErrorHandler";
 import * as actions from "../../store/actions/index";
 
 class Orders extends Component {
@@ -34,6 +35,7 @@ const mapStateToProps = (state) => {
   return {
     orders: state.order.orders,
     loading: state.order.loading,
+    error: state.order.error,
   };
 };
 
@@ -43,4 +45,7 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Orders);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ErrorHandler(Orders));
