@@ -7,6 +7,8 @@ These sweet sandwiches will ignite your hungering taste buds with
 promises of limitless avarice. Yet they must remain dormant, lapping
 clumsily at the scintillating pixels of your monitor.
 
+Try it out at [Sandwich Simulator](https://zakwarren.github.io/sandwich-simulator/)
+
 ## How to Use
 
 You need [Node.js](https://nodejs.org) installed on your machine.
