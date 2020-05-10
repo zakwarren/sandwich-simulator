@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/sandwich-simulator/precache-manifest.1e92203efff9beb3a58c78544e9d8193.js"
+  "/sandwich-simulator/precache-manifest.29fb2455e00a37f45a69832e09fada83.js"
 );
 
 self.addEventListener('message', (event) => {
