@@ -38,7 +38,12 @@ class SandwichSimulator extends Component {
   };
 
   purchaseHandler = () => {
-    this.setState({ purchasing: true });
+    if (this.props.isAuthenticated) {
+      this.setState({ purchasing: true });
+    } else {
+      this.props.onSetAuthRedirectPath("/checkout");
+      this.props.history.push("/auth");
+    }
   };
 
   purchaseCancelHandler = () => {
@@ -78,6 +83,7 @@ class SandwichSimulator extends Component {
             purchasable={!this.checkNoIngredients()}
             price={this.props.price}
             ordered={this.purchaseHandler}
+            isAuth={this.props.isAuthenticated}
           />
         </>
       );
@@ -110,6 +116,7 @@ SandwichSimulator.propTypes = {
   ings: PropTypes.array,
   price: PropTypes.number.isRequired,
   error: PropTypes.object,
+  isAuthenticated: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = (state) => {
@@ -117,6 +124,7 @@ const mapStateToProps = (state) => {
     ings: state.sandwichSimulator.ingredients,
     price: state.sandwichSimulator.totalPrice,
     error: state.sandwichSimulator.error,
+    isAuthenticated: state.auth.token !== null,
   };
 };
 
@@ -127,6 +135,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(actions.removeIngredient(ingName)),
     onInitIngredients: () => dispatch(actions.initIngredients()),
     onInitPurchase: () => dispatch(actions.purchaseInit()),
+    onSetAuthRedirectPath: (path) =>
+      dispatch(actions.setAuthRedirectPath(path)),
   };
 };
 

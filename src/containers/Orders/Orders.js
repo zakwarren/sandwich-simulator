@@ -8,7 +8,7 @@ import * as actions from "../../store/actions/index";
 
 class Orders extends Component {
   componentDidMount() {
-    this.props.onFetchOrders();
+    this.props.onFetchOrders(this.props.token, this.props.userId);
   }
 
   render() {
@@ -16,13 +16,15 @@ class Orders extends Component {
     if (!this.props.loading) {
       orders = (
         <div>
-          {this.props.orders.map((order) => (
-            <Order
-              key={order.id}
-              ingredients={order.ingredients}
-              price={order.price}
-            />
-          ))}
+          {this.props.orders.map((order) => {
+            return (
+              <Order
+                key={order.id}
+                ingredients={order.ingredients}
+                price={order.price}
+              />
+            );
+          })}
         </div>
       );
     }
@@ -36,12 +38,15 @@ const mapStateToProps = (state) => {
     orders: state.order.orders,
     loading: state.order.loading,
     error: state.order.error,
+    token: state.auth.token,
+    userId: state.auth.userId,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onFetchOrders: () => dispatch(actions.fetchOrders()),
+    onFetchOrders: (token, userId) =>
+      dispatch(actions.fetchOrders(token, userId)),
   };
 };
 

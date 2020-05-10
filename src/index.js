@@ -10,12 +10,17 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import sandwichSimulatorReducer from "./store/reducers/sandwichSimulator";
 import orderReducer from "./store/reducers/order";
+import authReducer from "./store/reducers/auth";
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const composeEnhancers =
+  process.env.NODE_ENV === "development"
+    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+    : null || compose;
 
 const rootReducer = combineReducers({
   sandwichSimulator: sandwichSimulatorReducer,
   order: orderReducer,
+  auth: authReducer,
 });
 
 const store = createStore(

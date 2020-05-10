@@ -28,10 +28,10 @@ const purchaseFail = (error) => {
   };
 };
 
-export const purchaseSandwich = (orderData) => {
+export const purchaseSandwich = (orderData, token) => {
   return (dispatch) => {
     dispatch(purchaseStart());
-    Server.post("/orders.json", orderData)
+    Server.post("/orders.json?auth=" + token, orderData)
       .then((result) => {
         if (result.message && result.message === "error") {
           throw new Error(result.data);
@@ -65,10 +65,12 @@ const fetchOrdersFail = (error) => {
   };
 };
 
-export const fetchOrders = () => {
+export const fetchOrders = (token, userId) => {
   return (dispatch) => {
     dispatch(fetchOrdersStart());
-    Server.get("/orders.json")
+    const queryParams =
+      "?auth=" + token + '&orderBy="userId"&equalTo="' + userId + '"';
+    Server.get("/orders.json" + queryParams)
       .then((res) => {
         if (res.message && res.message === "error") {
           throw new Error(res.data);
