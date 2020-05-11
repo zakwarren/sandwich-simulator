@@ -32,7 +32,7 @@ class SandwichSimulator extends Component {
 
   checkNoIngredients = () => {
     const hasNoIngredients = Object.values(this.props.ings).every(
-      (value) => value === 0
+      (value) => value.amount === 0
     );
     return hasNoIngredients;
   };
