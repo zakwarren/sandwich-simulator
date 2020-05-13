@@ -105,10 +105,51 @@ class ContactData extends Component {
     },
     formIsValid: false,
     loading: false,
+    canHaveNotifications: false,
+  };
+
+  componentDidMount() {
+    if ("Notification" in window && "serviceWorker" in navigator) {
+      this.setState({ canHaveNotifications: true });
+    }
+  }
+
+  askForNotificationPermission = () => {
+    Notification.requestPermission().then((result) => {
+      if (result === "granted") {
+        this.displayConfirmNotification();
+      }
+    });
+  };
+
+  displayConfirmNotification = () => {
+    if ("serviceWorker" in navigator) {
+      var options = {
+        body: "You successfully subscribed to our notification service",
+        data: { url: "http://localhost:3000/sandwich-simulator/" },
+        badge: "/public/logo192.png",
+        icon: "/public/logo192.png",
+        image: "/public/logo512.png",
+        dir: "ltr",
+        lang: "en-GB",
+        vibrate: [100, 50, 200],
+        tag: "confirm-notification",
+        renotify: true,
+        actions: [
+          { action: "confirm", title: "OK" },
+          { action: "cancel", title: "Cancel" },
+        ],
+      };
+      navigator.serviceWorker.ready.then((swreg) => {
+        swreg.showNotification("Successfully Subscribed!", options);
+      });
+    }
   };
 
   orderHandler = (event) => {
     event.preventDefault();
+
+    this.askForNotificationPermission();
 
     const formData = {};
     for (let formElement in this.state.orderForm) {
@@ -191,6 +232,11 @@ class ContactData extends Component {
           >
             Order
           </Button>
+          {this.state.canHaveNotifications ? (
+            <p>
+              Please accept notifications to receive updates about your order
+            </p>
+          ) : null}
         </form>
       </div>
     );

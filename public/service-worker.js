@@ -61,3 +61,29 @@ self.addEventListener("fetch", (event) => {
     );
   }
 });
+
+self.addEventListener("notificationclick", (event) => {
+  const notification = event.notification;
+  const action = event.action;
+
+  if (action !== "cancel") {
+    event.waitUntil(
+      clients.matchAll().then((clis) => {
+        const client = clis.find((c) => {
+          return c.visibilityState === "visible";
+        });
+        if (client !== undefined) {
+          client.navigate(notification.data.url);
+          client.focus();
+        } else {
+          clients.openWindow(notification.data.url);
+        }
+      })
+    );
+  }
+  notification.close();
+});
+
+self.addEventListener("notificationclose", (event) => {
+  console.log("Notification was closed", event);
+});
