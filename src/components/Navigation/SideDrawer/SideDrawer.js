@@ -20,6 +20,9 @@ const SideDrawer = (props) => {
           <Logo />
         </div>
         <nav>
+          {props.installPrompt ? (
+            <button onClick={props.promptForInstall}>Install</button>
+          ) : null}
           <NavigationItems isAuth={props.isAuth} />
         </nav>
       </div>
@@ -30,6 +33,8 @@ const SideDrawer = (props) => {
 SideDrawer.propTypes = {
   open: PropTypes.bool,
   closed: PropTypes.func.isRequired,
+  installPrompt: PropTypes.object,
+  promptForInstall: PropTypes.func.isRequired,
 };
 
 export default SideDrawer;

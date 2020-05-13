@@ -18,6 +18,29 @@
   }
 }
 
+.SideDrawer button {
+  margin: 0 0.2rem;
+  padding: 0.25rem 1rem;
+  height: 80%;
+  background-color: #40a4c8;
+  border: 0.1rem solid #40a4c8;
+  border-radius: 0.2rem;
+  box-shadow: 0.06rem 0.12rem 0.18rem #ccc;
+  outline: none;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  align-self: center;
+  transition: all 0.3s ease;
+}
+
+.SideDrawer button:hover,
+.SideDrawer button:active {
+  background-color: #fff;
+  border-color: #fff;
+  color: #40a4c8;
+}
+
 .Open {
   transform: translateX(0);
 }
