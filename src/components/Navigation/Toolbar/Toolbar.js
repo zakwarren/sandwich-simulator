@@ -13,6 +13,9 @@ const Toolbar = (props) => (
       <Logo />
     </div>
     <nav className={classes.DesktopOnly}>
+      {props.installPrompt ? (
+        <button onClick={props.promptForInstall}>Install</button>
+      ) : null}
       <NavigationItems isAuth={props.isAuth} />
     </nav>
   </header>
@@ -20,6 +23,8 @@ const Toolbar = (props) => (
 
 Toolbar.propTypes = {
   drawerToggleClicked: PropTypes.func.isRequired,
+  installPrompt: PropTypes.object,
+  promptForInstall: PropTypes.func.isRequired,
 };
 
 export default Toolbar;

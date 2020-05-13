@@ -8,6 +8,20 @@ import SideDrawer from "../../components/Navigation/SideDrawer/SideDrawer";
 class Layout extends Component {
   state = {
     showSideDrawer: false,
+    deferredPrompt: null,
+  };
+
+  componentDidMount() {
+    window.addEventListener("beforeinstallprompt", (event) => {
+      event.preventDefault();
+      this.setState({ deferredPrompt: event });
+      return false;
+    });
+  }
+
+  promptForInstallHandler = () => {
+    this.state.deferredPrompt.prompt();
+    this.setState({ deferredPrompt: null });
   };
 
   sideDrawerCloseHandler = () => {
@@ -26,11 +40,15 @@ class Layout extends Component {
         <Toolbar
           isAuth={this.props.isAuthenticated}
           drawerToggleClicked={this.sideDrawerToggleHandler}
+          installPrompt={this.state.deferredPrompt}
+          promptForInstall={this.promptForInstallHandler}
         />
         <SideDrawer
           isAuth={this.props.isAuthenticated}
           open={this.state.showSideDrawer}
           closed={this.sideDrawerCloseHandler}
+          installPrompt={this.state.deferredPrompt}
+          promptForInstall={this.promptForInstallHandler}
         />
         <main className={classes.Content}>{this.props.children}</main>
       </>
