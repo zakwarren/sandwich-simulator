@@ -6,7 +6,7 @@ import Spinner from "../../components/UI/Spinner/Spinner";
 import ErrorHandler from "../../hoc/ErrorHandler/ErrorHandler";
 import * as actions from "../../store/actions/index";
 
-class Orders extends Component {
+export class Orders extends Component {
   componentDidMount() {
     this.props.onFetchOrders(this.props.token, this.props.userId);
   }
@@ -33,7 +33,7 @@ class Orders extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
+export const mapStateToProps = (state) => {
   return {
     orders: state.order.orders,
     loading: state.order.loading,
