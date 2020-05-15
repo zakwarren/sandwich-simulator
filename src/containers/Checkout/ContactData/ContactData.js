@@ -125,11 +125,11 @@ class ContactData extends Component {
   displayConfirmNotification = () => {
     if ("serviceWorker" in navigator) {
       var options = {
-        body: "You successfully subscribed to our notification service",
+        body: "Thank you for your order. Your sandwich will be prepared soon.",
         data: { url: "http://localhost:3000/sandwich-simulator/" },
-        badge: "/public/logo192.png",
-        icon: "/public/logo192.png",
-        image: "/public/logo512.png",
+        badge: "/sandwich-simulator/logo192.png",
+        icon: "/sandwich-simulator/logo192.png",
+        image: "/sandwich-simulator/logo512.png",
         dir: "ltr",
         lang: "en-GB",
         vibrate: [100, 50, 200],
@@ -141,7 +141,7 @@ class ContactData extends Component {
         ],
       };
       navigator.serviceWorker.ready.then((swreg) => {
-        swreg.showNotification("Successfully Subscribed!", options);
+        swreg.showNotification("Sandwich ordered!", options);
       });
     }
   };
