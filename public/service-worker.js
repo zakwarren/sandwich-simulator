@@ -87,3 +87,23 @@ self.addEventListener("notificationclick", (event) => {
 self.addEventListener("notificationclose", (event) => {
   console.log("Notification was closed", event);
 });
+
+self.addEventListener("push", (event) => {
+  console.log("Push notification received", event);
+
+  let data = { title: "New", content: "Something new occurred", openUrl: "/" };
+  if (event.data) {
+    data = JSON.parse(event.data.text());
+  }
+
+  const options = {
+    body: data.content,
+    icon: "/public/logo192.png",
+    badge: "/public/logo192.png",
+    vibrate: [100, 50, 200],
+    data: {
+      url: data.openUrl,
+    },
+  };
+  event.waitUntil(self.registration.showNotification(data.title, options));
+});
