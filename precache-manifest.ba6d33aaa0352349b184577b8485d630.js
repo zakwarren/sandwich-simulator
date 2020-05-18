@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "1bead7d311bf84e3c8618a3b08a08d6a",
+    "revision": "c6d24fef0343abe150f5878299a69b0f",
     "url": "/sandwich-simulator/index.html"
   },
   {
@@ -12,7 +12,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/sandwich-simulator/static/css/4.f3184870.chunk.css"
   },
   {
-    "revision": "8195333d8abb7279bb93",
+    "revision": "b8770168dc6ab4ae7fc7",
     "url": "/sandwich-simulator/static/css/main.87a6237f.chunk.css"
   },
   {
@@ -32,8 +32,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/sandwich-simulator/static/js/4.bb352a0b.chunk.js"
   },
   {
-    "revision": "8195333d8abb7279bb93",
-    "url": "/sandwich-simulator/static/js/main.d270a9ec.chunk.js"
+    "revision": "b8770168dc6ab4ae7fc7",
+    "url": "/sandwich-simulator/static/js/main.c6e830a9.chunk.js"
   },
   {
     "revision": "d231560807dcb98d5186",
