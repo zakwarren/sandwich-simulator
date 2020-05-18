@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import Sandwich from "../../components/Sandwich/Sandwich";
 import BuildControls from "../../components/Sandwich/BuildControls/BuildControls";
@@ -13,34 +13,52 @@ import * as actions from "../../store/actions/index";
 const SandwichSimulator = (props) => {
   const [purchasing, setPurchasing] = useState(false);
 
-  const { onInitIngredients } = props;
+  const dispatch = useDispatch();
+
+  const ings = useSelector((state) => state.sandwichSimulator.ingredients);
+  const price = useSelector((state) => state.sandwichSimulator.totalPrice);
+  const error = useSelector((state) => state.sandwichSimulator.error);
+  const isAuthenticated = useSelector((state) => state.auth.token !== null);
+
+  const onIngredientAdded = (ingName) =>
+    dispatch(actions.addIngredient(ingName));
+  const onIngredientRemoved = (ingName) =>
+    dispatch(actions.removeIngredient(ingName));
+  const onInitIngredients = useCallback(
+    () => dispatch(actions.initIngredients()),
+    [dispatch]
+  );
+  const onInitPurchase = () => dispatch(actions.purchaseInit());
+  const onSetAuthRedirectPath = (path) =>
+    dispatch(actions.setAuthRedirectPath(path));
+
   useEffect(() => {
     onInitIngredients();
   }, [onInitIngredients]);
 
   const getIngredientCounts = () => {
-    if (!props.ings) {
+    if (!ings) {
       return;
     }
     let ingCounts = {};
-    for (let ing of props.ings) {
+    for (let ing of ings) {
       ingCounts[ing.type] = ing.amount;
     }
     return ingCounts;
   };
 
   const checkNoIngredients = () => {
-    const hasNoIngredients = Object.values(props.ings).every(
+    const hasNoIngredients = Object.values(ings).every(
       (value) => value.amount === 0
     );
     return hasNoIngredients;
   };
 
   const purchaseHandler = () => {
-    if (props.isAuthenticated) {
+    if (isAuthenticated) {
       setPurchasing(true);
     } else {
-      props.onSetAuthRedirectPath("/checkout");
+      onSetAuthRedirectPath("/checkout");
       props.history.push("/auth");
     }
   };
@@ -50,7 +68,7 @@ const SandwichSimulator = (props) => {
   };
 
   const purchaseContinueHandler = () => {
-    props.onInitPurchase();
+    onInitPurchase();
     props.history.push("/checkout");
   };
 
@@ -64,31 +82,27 @@ const SandwichSimulator = (props) => {
   }
 
   let orderSummary = null;
-  let sandwich = props.error ? (
-    <p>ingredients can't be loaded!</p>
-  ) : (
-    <Spinner />
-  );
+  let sandwich = error ? <p>ingredients can't be loaded!</p> : <Spinner />;
   if (ingCounts) {
     sandwich = (
       <>
         <Sandwich ingredients={ingCounts} />
         <BuildControls
-          controls={props.ings}
-          ingredientAdded={props.onIngredientAdded}
-          ingredientRemoved={props.onIngredientRemoved}
+          controls={ings}
+          ingredientAdded={onIngredientAdded}
+          ingredientRemoved={onIngredientRemoved}
           disabled={disabledInfo}
           purchasable={!checkNoIngredients()}
-          price={props.price}
+          price={price}
           ordered={purchaseHandler}
-          isAuth={props.isAuthenticated}
+          isAuth={isAuthenticated}
         />
       </>
     );
     orderSummary = (
       <OrderSummary
-        ingredients={props.ings}
-        price={props.price}
+        ingredients={ings}
+        price={price}
         purchaseCancelled={purchaseCancelHandler}
         purchaseContinued={purchaseContinueHandler}
       />
@@ -107,34 +121,6 @@ const SandwichSimulator = (props) => {
 
 SandwichSimulator.propTypes = {
   history: PropTypes.object.isRequired,
-  ings: PropTypes.array,
-  price: PropTypes.number.isRequired,
-  error: PropTypes.object,
-  isAuthenticated: PropTypes.bool.isRequired,
 };
 
-const mapStateToProps = (state) => {
-  return {
-    ings: state.sandwichSimulator.ingredients,
-    price: state.sandwichSimulator.totalPrice,
-    error: state.sandwichSimulator.error,
-    isAuthenticated: state.auth.token !== null,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onIngredientAdded: (ingName) => dispatch(actions.addIngredient(ingName)),
-    onIngredientRemoved: (ingName) =>
-      dispatch(actions.removeIngredient(ingName)),
-    onInitIngredients: () => dispatch(actions.initIngredients()),
-    onInitPurchase: () => dispatch(actions.purchaseInit()),
-    onSetAuthRedirectPath: (path) =>
-      dispatch(actions.setAuthRedirectPath(path)),
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ErrorHandler(SandwichSimulator));
+export default ErrorHandler(SandwichSimulator);
