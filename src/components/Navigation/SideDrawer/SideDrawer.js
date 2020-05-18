@@ -35,6 +35,7 @@ SideDrawer.propTypes = {
   closed: PropTypes.func.isRequired,
   installPrompt: PropTypes.object,
   promptForInstall: PropTypes.func.isRequired,
+  isAuth: PropTypes.bool.isRequired,
 };
 
 export default SideDrawer;
