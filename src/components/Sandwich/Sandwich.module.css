@@ -12,5 +12,6 @@
   .Sandwich {
     width: 50%;
     height: 80vh;
+    max-height: 100%;
   }
 }
