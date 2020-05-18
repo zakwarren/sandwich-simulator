@@ -1,4 +1,4 @@
-import React, { Component, lazy, Suspense } from "react";
+import React, { useEffect, lazy, Suspense } from "react";
 import { Route, Switch, withRouter, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
@@ -11,46 +11,43 @@ import * as actions from "./store/actions/index";
 const Orders = lazy(() => import("./containers/Orders/Orders"));
 const Checkout = lazy(() => import("./containers/Checkout/Checkout"));
 
-class App extends Component {
-  componentDidMount() {
-    this.props.onTryAutoSignIn();
-  }
+const App = (props) => {
+  const { onTryAutoSignIn } = props;
 
-  render() {
-    let routes = (
+  useEffect(() => {
+    onTryAutoSignIn();
+  }, [onTryAutoSignIn]);
+
+  let routes = (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Switch>
+        <Route path="/auth" component={Auth} />
+        <Route path="/" exact component={SandwichSimulator} />
+        <Redirect to="/" />
+      </Switch>
+    </Suspense>
+  );
+  if (props.isAuthenticated) {
+    routes = (
       <Suspense fallback={<div>Loading...</div>}>
         <Switch>
+          <Route path="/checkout" render={(props) => <Checkout {...props} />} />
+          <Route path="/orders" render={() => <Orders />} />
+          <Route path="/logout" component={Logout} />
           <Route path="/auth" component={Auth} />
           <Route path="/" exact component={SandwichSimulator} />
           <Redirect to="/" />
         </Switch>
       </Suspense>
     );
-    if (this.props.isAuthenticated) {
-      routes = (
-        <Suspense fallback={<div>Loading...</div>}>
-          <Switch>
-            <Route
-              path="/checkout"
-              render={(props) => <Checkout {...props} />}
-            />
-            <Route path="/orders" render={() => <Orders />} />
-            <Route path="/logout" component={Logout} />
-            <Route path="/auth" component={Auth} />
-            <Route path="/" exact component={SandwichSimulator} />
-            <Redirect to="/" />
-          </Switch>
-        </Suspense>
-      );
-    }
-
-    return (
-      <div>
-        <Layout>{routes}</Layout>
-      </div>
-    );
   }
-}
+
+  return (
+    <div>
+      <Layout>{routes}</Layout>
+    </div>
+  );
+};
 
 const mapStateToProps = (state) => {
   return {
