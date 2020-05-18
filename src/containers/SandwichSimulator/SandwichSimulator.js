@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
@@ -10,106 +10,100 @@ import Spinner from "../../components/UI/Spinner/Spinner";
 import ErrorHandler from "../../hoc/ErrorHandler/ErrorHandler";
 import * as actions from "../../store/actions/index";
 
-class SandwichSimulator extends Component {
-  state = {
-    purchasing: false,
-  };
+const SandwichSimulator = (props) => {
+  const [purchasing, setPurchasing] = useState(false);
 
-  componentDidMount() {
-    this.props.onInitIngredients();
-  }
+  const { onInitIngredients } = props;
+  useEffect(() => {
+    onInitIngredients();
+  }, [onInitIngredients]);
 
-  getIngredientCounts = () => {
-    if (!this.props.ings) {
+  const getIngredientCounts = () => {
+    if (!props.ings) {
       return;
     }
     let ingCounts = {};
-    for (let ing of this.props.ings) {
+    for (let ing of props.ings) {
       ingCounts[ing.type] = ing.amount;
     }
     return ingCounts;
   };
 
-  checkNoIngredients = () => {
-    const hasNoIngredients = Object.values(this.props.ings).every(
+  const checkNoIngredients = () => {
+    const hasNoIngredients = Object.values(props.ings).every(
       (value) => value.amount === 0
     );
     return hasNoIngredients;
   };
 
-  purchaseHandler = () => {
-    if (this.props.isAuthenticated) {
-      this.setState({ purchasing: true });
+  const purchaseHandler = () => {
+    if (props.isAuthenticated) {
+      setPurchasing(true);
     } else {
-      this.props.onSetAuthRedirectPath("/checkout");
-      this.props.history.push("/auth");
+      props.onSetAuthRedirectPath("/checkout");
+      props.history.push("/auth");
     }
   };
 
-  purchaseCancelHandler = () => {
-    this.setState({ purchasing: false });
+  const purchaseCancelHandler = () => {
+    setPurchasing(false);
   };
 
-  purchaseContinueHandler = () => {
-    this.props.onInitPurchase();
-    this.props.history.push("/checkout");
+  const purchaseContinueHandler = () => {
+    props.onInitPurchase();
+    props.history.push("/checkout");
   };
 
-  render() {
-    const ingCounts = this.getIngredientCounts();
+  const ingCounts = getIngredientCounts();
 
-    const disabledInfo = {
-      ...ingCounts,
-    };
-    for (let key in disabledInfo) {
-      disabledInfo[key] = disabledInfo[key] <= 0;
-    }
+  const disabledInfo = {
+    ...ingCounts,
+  };
+  for (let key in disabledInfo) {
+    disabledInfo[key] = disabledInfo[key] <= 0;
+  }
 
-    let orderSummary = null;
-    let sandwich = this.props.error ? (
-      <p>ingredients can't be loaded!</p>
-    ) : (
-      <Spinner />
-    );
-    if (ingCounts) {
-      sandwich = (
-        <>
-          <Sandwich ingredients={ingCounts} />
-          <BuildControls
-            controls={this.props.ings}
-            ingredientAdded={this.props.onIngredientAdded}
-            ingredientRemoved={this.props.onIngredientRemoved}
-            disabled={disabledInfo}
-            purchasable={!this.checkNoIngredients()}
-            price={this.props.price}
-            ordered={this.purchaseHandler}
-            isAuth={this.props.isAuthenticated}
-          />
-        </>
-      );
-      orderSummary = (
-        <OrderSummary
-          ingredients={this.props.ings}
-          price={this.props.price}
-          purchaseCancelled={this.purchaseCancelHandler}
-          purchaseContinued={this.purchaseContinueHandler}
-        />
-      );
-    }
-
-    return (
+  let orderSummary = null;
+  let sandwich = props.error ? (
+    <p>ingredients can't be loaded!</p>
+  ) : (
+    <Spinner />
+  );
+  if (ingCounts) {
+    sandwich = (
       <>
-        <Modal
-          show={this.state.purchasing}
-          modalClosed={this.purchaseCancelHandler}
-        >
-          {orderSummary}
-        </Modal>
-        {sandwich}
+        <Sandwich ingredients={ingCounts} />
+        <BuildControls
+          controls={props.ings}
+          ingredientAdded={props.onIngredientAdded}
+          ingredientRemoved={props.onIngredientRemoved}
+          disabled={disabledInfo}
+          purchasable={!checkNoIngredients()}
+          price={props.price}
+          ordered={purchaseHandler}
+          isAuth={props.isAuthenticated}
+        />
       </>
     );
+    orderSummary = (
+      <OrderSummary
+        ingredients={props.ings}
+        price={props.price}
+        purchaseCancelled={purchaseCancelHandler}
+        purchaseContinued={purchaseContinueHandler}
+      />
+    );
   }
-}
+
+  return (
+    <>
+      <Modal show={purchasing} modalClosed={purchaseCancelHandler}>
+        {orderSummary}
+      </Modal>
+      {sandwich}
+    </>
+  );
+};
 
 SandwichSimulator.propTypes = {
   history: PropTypes.object.isRequired,
