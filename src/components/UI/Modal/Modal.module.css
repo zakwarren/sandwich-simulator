@@ -8,7 +8,6 @@
   background-color: white;
   border: 0.06rem solid #ccc;
   box-shadow: 0.06rem 0.06rem 0.06rem black;
-  box-sizing: border-box;
   transition: all 0.3s ease-out;
 }
 

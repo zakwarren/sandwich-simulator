@@ -8,7 +8,7 @@ const initialState = {
   error: null,
 };
 
-const purchaseBurgerSuccess = (state, action) => {
+const purchaseSuccess = (state, action) => {
   const newOrder = updateObject(action.orderData, { id: action.orderId });
   return updateObject(state, {
     loading: false,
@@ -24,7 +24,7 @@ const reducer = (state = initialState, action) => {
     case actionTypes.PURCHASE_START:
       return updateObject(state, { loading: true, error: null });
     case actionTypes.PURCHASE_SUCCESS:
-      return purchaseBurgerSuccess(state, action);
+      return purchaseSuccess(state, action);
     case actionTypes.PURCHASE_FAIL:
       return updateObject(state, { loading: false, error: action.error });
     case actionTypes.FETCH_ORDERS_START:

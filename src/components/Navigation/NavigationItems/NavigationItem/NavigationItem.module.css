@@ -1,5 +1,4 @@
 .NavigationItem {
-  box-sizing: border-box;
   margin: 0.6rem 0;
   width: 100%;
   height: auto;
@@ -7,7 +6,6 @@
 }
 
 .NavigationItem a {
-  box-sizing: border-box;
   width: 100%;
   height: auto;
   color: #008000;
@@ -31,18 +29,18 @@
   }
 
   .NavigationItem a {
-    padding: 16px 10px;
+    padding: 1rem 0.6rem;
     width: auto;
     height: 100%;
     color: #fff;
-    border-bottom: 4px solid transparent;
+    border-bottom: 0.25rem solid transparent;
   }
 
   .NavigationItem a:hover,
   .NavigationItem a:active,
   .NavigationItem a.active {
     background-color: #40a4c8;
-    border-bottom: 4px solid #90ee90;
+    border-bottom: 0.25rem solid #90ee90;
     color: #fff;
   }
 }
