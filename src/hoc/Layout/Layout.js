@@ -1,60 +1,59 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 
 import classes from "./Layout.module.css";
 import Toolbar from "../../components/Navigation/Toolbar/Toolbar";
 import SideDrawer from "../../components/Navigation/SideDrawer/SideDrawer";
 
-class Layout extends Component {
-  state = {
-    showSideDrawer: false,
-    deferredPrompt: null,
+const Layout = (props) => {
+  const [showSideDrawer, setShowSideDrawer] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+
+  useEffect(() => {
+    window.addEventListener("beforeinstallprompt", getInstallPrompt);
+    return () => {
+      window.removeEventListener("beforeinstallprompt", getInstallPrompt);
+    };
+  }, []);
+
+  const getInstallPrompt = (event) => {
+    event.preventDefault();
+    setDeferredPrompt(event);
+    return false;
   };
 
-  componentDidMount() {
-    window.addEventListener("beforeinstallprompt", (event) => {
-      event.preventDefault();
-      this.setState({ deferredPrompt: event });
-      return false;
-    });
-  }
-
-  promptForInstallHandler = () => {
-    this.state.deferredPrompt.prompt();
-    this.setState({ deferredPrompt: null });
+  const promptForInstallHandler = () => {
+    deferredPrompt.prompt();
+    setDeferredPrompt(null);
   };
 
-  sideDrawerCloseHandler = () => {
-    this.setState({ showSideDrawer: false });
+  const sideDrawerCloseHandler = () => {
+    setShowSideDrawer(false);
   };
 
-  sideDrawerToggleHandler = () => {
-    this.setState((prevState) => {
-      return { showSideDrawer: !prevState.showSideDrawer };
-    });
+  const sideDrawerToggleHandler = () => {
+    setShowSideDrawer(!showSideDrawer);
   };
 
-  render() {
-    return (
-      <>
-        <Toolbar
-          isAuth={this.props.isAuthenticated}
-          drawerToggleClicked={this.sideDrawerToggleHandler}
-          installPrompt={this.state.deferredPrompt}
-          promptForInstall={this.promptForInstallHandler}
-        />
-        <SideDrawer
-          isAuth={this.props.isAuthenticated}
-          open={this.state.showSideDrawer}
-          closed={this.sideDrawerCloseHandler}
-          installPrompt={this.state.deferredPrompt}
-          promptForInstall={this.promptForInstallHandler}
-        />
-        <main className={classes.Content}>{this.props.children}</main>
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <Toolbar
+        isAuth={props.isAuthenticated}
+        drawerToggleClicked={sideDrawerToggleHandler}
+        installPrompt={deferredPrompt}
+        promptForInstall={promptForInstallHandler}
+      />
+      <SideDrawer
+        isAuth={props.isAuthenticated}
+        open={showSideDrawer}
+        closed={sideDrawerCloseHandler}
+        installPrompt={deferredPrompt}
+        promptForInstall={promptForInstallHandler}
+      />
+      <main className={classes.Content}>{props.children}</main>
+    </>
+  );
+};
 
 const mapStateToProps = (state) => {
   return {
