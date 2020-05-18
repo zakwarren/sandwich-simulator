@@ -1,44 +1,38 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 
 import Modal from "../../components/UI/Modal/Modal";
 
-const ErrorHandler = (WrappedComponent) => {
-  return class extends Component {
-    state = {
-      hasError: false,
+const withErrorHandler = (WrappedComponent) => {
+  return (props) => {
+    const [hasError, setHasError] = useState(false);
+
+    const { error } = props;
+    useEffect(() => {
+      if (error) {
+        setHasError(true);
+      }
+    }, [error]);
+
+    const errorConfirmedHandler = () => {
+      setHasError(false);
     };
 
-    componentDidMount() {
-      if (!this.props.error) {
-        this.setState({ hasError: true });
-      }
-    }
-
-    errorConfirmedHandler = () => {
-      this.setState({ hasError: false });
-    };
-
-    render() {
-      let displayError = null;
-      if (this.props.error) {
-        displayError = (
-          <Modal
-            show={this.state.hasError}
-            modalClosed={this.errorConfirmedHandler}
-          >
-            {this.props.error.toString()}
-          </Modal>
-        );
-      }
-
-      return (
-        <>
-          {displayError}
-          <WrappedComponent {...this.props} />
-        </>
+    let displayError = null;
+    if (hasError) {
+      displayError = (
+        <Modal show={hasError} modalClosed={errorConfirmedHandler}>
+          {props.error.toString()}
+        </Modal>
       );
     }
+
+    return (
+      <>
+        {displayError}
+        <WrappedComponent {...props} />
+      </>
+    );
   };
 };
 
-export default ErrorHandler;
+export default withErrorHandler;
