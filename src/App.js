@@ -19,32 +19,30 @@ const App = (props) => {
   }, [onTryAutoSignIn]);
 
   let routes = (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Switch>
+      <Route path="/auth" component={Auth} />
+      <Route path="/" exact component={SandwichSimulator} />
+      <Redirect to="/" />
+    </Switch>
+  );
+  if (props.isAuthenticated) {
+    routes = (
       <Switch>
+        <Route path="/checkout" render={(props) => <Checkout {...props} />} />
+        <Route path="/orders" render={() => <Orders />} />
+        <Route path="/logout" component={Logout} />
         <Route path="/auth" component={Auth} />
         <Route path="/" exact component={SandwichSimulator} />
         <Redirect to="/" />
       </Switch>
-    </Suspense>
-  );
-  if (props.isAuthenticated) {
-    routes = (
-      <Suspense fallback={<div>Loading...</div>}>
-        <Switch>
-          <Route path="/checkout" render={(props) => <Checkout {...props} />} />
-          <Route path="/orders" render={() => <Orders />} />
-          <Route path="/logout" component={Logout} />
-          <Route path="/auth" component={Auth} />
-          <Route path="/" exact component={SandwichSimulator} />
-          <Redirect to="/" />
-        </Switch>
-      </Suspense>
     );
   }
 
   return (
     <div>
-      <Layout>{routes}</Layout>
+      <Layout>
+        <Suspense fallback={<p>Loading...</p>}>{routes}</Suspense>
+      </Layout>
     </div>
   );
 };
